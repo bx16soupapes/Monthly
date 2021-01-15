@@ -116,9 +116,14 @@
 <body>
 <div class="page">
 		<h1>monthly.js</h1>
-		<h2>Example One - Event Calendar</h2>
+		<h2>Example One A- Event Calendar width Working days</h2>
 		<div style="width:100%; max-width:600px; display:inline-block;">
-			<div class="monthly" id="mycalendar"></div>
+			<div class="monthly" id="mycalendar_a"></div>
+		</div>
+		<br><br>
+		<h2>Example One B - Event Calendar no working days</h2>
+		<div style="width:100%; max-width:600px; display:inline-block;">
+			<div class="monthly" id="mycalendar_b"></div>
 		</div>
 		<br><br>
 		<h2>Example Two - Date Picker</h2>
@@ -135,11 +140,28 @@
 <script type="text/javascript">
 	$(window).load( function() {
 
-		$('#mycalendar').monthly({
+		$('#mycalendar_a').monthly({
 			mode: 'event',
+			weekStart:'Mon',
+			locale:'es',
+			showWorkingDays:true,
+			dayNames: ["Dom", "Lun", "Mar", "Mier", "Jue", "Vie", "Sab"],
+			monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
 			//jsonUrl: 'events.json',
 			//dataType: 'json'
-			xmlUrl: 'events.xml'
+			xmlUrl: 'events.xml'			
+		});
+		
+		$('#mycalendar_b').monthly({
+			mode: 'event',
+			weekStart:'Mon',
+			locale:'es',
+			showWorkingDays:false,
+			dayNames: ["Dom", "Lun", "Mar", "Mier", "Jue", "Vie", "Sab"],
+			monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+			//jsonUrl: 'events.json',
+			//dataType: 'json'
+			xmlUrl: 'events.xml'			
 		});
 
 		$('#mycalendar2').monthly({
