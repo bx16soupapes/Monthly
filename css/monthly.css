@@ -375,7 +375,11 @@
 
 .monthly-locale-fr .monthly-reset:after		{ content: "aujourd'hui"; }
 .monthly-locale-fr .monthly-cal:after		{ content: "mois"; }
-.monthly-locale-fr .monthly-list-item:after	{ content: 'aucun événement'; }
+.monthly-locale-fr .monthly-list-item:after	{ content: 'aucun Ã©vÃ©nement'; }
+
+.monthly-locale-es .monthly-reset:after		{ content: "Hoy"; }
+.monthly-locale-es .monthly-cal:after		{ content: "Mes"; }
+.monthly-locale-es .monthly-list-item:after	{ content: 'Sin Eventos'; }
 
 
 /*
