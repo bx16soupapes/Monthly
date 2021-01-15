@@ -21,6 +21,8 @@ Did this plugin help you out? Support open source development! <a href="https://
 
 ##Changelog
 
+Modified 15-01-2021 -- added working days
+
 v 2.2.2 - Fixed <a href="https://github.com/kthornbloom/Monthly/issues/62">Issue 62</a>
 
 v 2.2.1 - Fixed an AM/PM display bug
