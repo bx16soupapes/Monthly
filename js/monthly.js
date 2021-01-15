@@ -1,5 +1,6 @@
 /*
 Monthly 2.2.2 by Kevin Thornbloom is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+Modified 15-01-2021 -- added working days
 */
 
 (function ($) {
@@ -24,6 +25,7 @@ Monthly 2.2.2 by Kevin Thornbloom is licensed under a Creative Commons Attributi
 				target: "",
 				useIsoDateFormat: false,
 				weekStart: 0,	// Sunday
+				showWorkingDays: true, 
 				xmlUrl: ""
 			};
 
@@ -41,7 +43,9 @@ Monthly 2.2.2 by Kevin Thornbloom is licensed under a Creative Commons Attributi
 				dayNames = options.dayNames || defaultDayNames(),
 				markupBlankDay = '<div class="m-d monthly-day-blank"><div class="monthly-day-number"></div></div>',
 				weekStartsOnMonday = options.weekStart === "Mon" || options.weekStart === 1 || options.weekStart === "1",
+				WorkingDays = options.showWorkingDays,
 				primaryLanguageCode = locale.substring(0, 2).toLowerCase();
+				
 
 		if (options.maxWidth !== false) {
 			$(parent).css("maxWidth", options.maxWidth);
@@ -69,7 +73,7 @@ Monthly 2.2.2 by Kevin Thornbloom is licensed under a Creative Commons Attributi
 		}
 
 		// Add Day Of Week Titles
-		_appendDayNames(weekStartsOnMonday);
+		_appendDayNames(weekStartsOnMonday,WorkingDays);
 
 		// Add CSS classes for the primary language and the locale. This allows for CSS-driven
 		// overrides of the language-specific header buttons. Lowercased because locale codes
@@ -306,7 +310,22 @@ Monthly 2.2.2 by Kevin Thornbloom is licensed under a Creative Commons Attributi
 			return " " + name + "=\"" + newValue + "\"";
 		}
 
-		function _appendDayNames(startOnMonday) {
+		function _appendDayNames(startOnMonday,WorkingDays) {
+			console.log("showWorkingDays:"+WorkingDays);//showWorkingDays
+			if(WorkingDays == true) { var tdays=6; } else { var tdays=5; }
+			
+			var offset = startOnMonday ? 1 : 0,
+				dayName = "",
+				dayIndex = 0;
+			for(dayIndex = 0; dayIndex < tdays; dayIndex++) {
+				dayName += "<div>" + dayNames[dayIndex + offset] + "</div>";
+			}
+			if(WorkingDays == true) dayName += "<div>" + dayNames[startOnMonday ? 0 : 6] + "</div>";
+			$(parent).append('<div class="monthly-day-title-wrap">' + dayName + '</div><div class="monthly-day-wrap"></div>');
+		}
+
+		function _appendDayNames__reso(startOnMonday) {
+			//console.log("append"+startOnMonday);
 			var offset = startOnMonday ? 1 : 0,
 				dayName = "",
 				dayIndex = 0;
