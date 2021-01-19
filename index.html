@@ -111,48 +111,43 @@
 			}
 		}
 	</style>
-	<link rel="stylesheet" href="css/monthly.css">
+	<link rel="stylesheet" href="css/monthly_xmb.css">
 </head>
 <body>
 <div class="page">
 		<h1>monthly.js</h1>
-		<h2>Example One A- Event Calendar width Working days</h2>
+		<h2>Example One A- Event Calendar width all Week</h2>
 		<div style="width:100%; max-width:600px; display:inline-block;">
 			<div class="monthly" id="mycalendar_a"></div>
 		</div>
 		<br><br>
-		<h2>Example One B - Event Calendar no working days</h2>
+		<h2>Example One B - Event Calendar width working days</h2>
 		<div style="width:100%; max-width:600px; display:inline-block;">
 			<div class="monthly" id="mycalendar_b"></div>
 		</div>
 		<br><br>
-		<h2>Example Two - Date Picker</h2>
+		<h2>Example Two A - Date Picker width all Week</h2>
 		<div style="display:inline-block; width:250px;">
-			<input type="text" id="mytarget" value="Select Date">
-			<div class="monthly" id="mycalendar2"></div>
+			<input type="text" id="mytarget_a" value="Select Date">
+			<div class="monthly" id="mycalendar2_a"></div>
+		</div>
+		<br><br>
+		<h2>Example Two B - Date Picker width working days</h2>
+		<div style="display:inline-block; width:250px;">
+			<input type="text" id="mytarget_b" value="Select Date">
+			<div class="monthly" id="mycalendar2_b"></div>
 		</div>
 		<br>
-		<a href="https://github.com/kthornbloom/Monthly" class="button">DOWNLOAD / DOCS</a>
+		<a href="https://github.com/bx16soupapes/Monthly" class="button">DOWNLOAD / DOCS</a>
 </div>
 <!-- JS ======================================================= -->
 <script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/monthly.js"></script>
+<script type="text/javascript" src="js/monthly_old.js"></script>
 <script type="text/javascript">
 	$(window).load( function() {
 
+
 		$('#mycalendar_a').monthly({
-			mode: 'event',
-			weekStart:'Mon',
-			locale:'es',
-			showWorkingDays:true,
-			dayNames: ["Dom", "Lun", "Mar", "Mier", "Jue", "Vie", "Sab"],
-			monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-			//jsonUrl: 'events.json',
-			//dataType: 'json'
-			xmlUrl: 'events.xml'			
-		});
-		
-		$('#mycalendar_b').monthly({
 			mode: 'event',
 			weekStart:'Mon',
 			locale:'es',
@@ -164,14 +159,47 @@
 			xmlUrl: 'events.xml'			
 		});
 
-		$('#mycalendar2').monthly({
+		$('#mycalendar_b').monthly({
+			mode: 'event',
+			weekStart:'Mon',
+			locale:'es',
+			showWorkingDays:true,
+			dayNames: ["Dom", "Lun", "Mar", "Mier", "Jue", "Vie", "Sab"],
+			monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+			//jsonUrl: 'events.json',
+			//dataType: 'json'
+			xmlUrl: 'events.xml'			
+			//xmlUrl: 'eventos_ot.xml'			
+		});
+
+		$('#mycalendar2_a').monthly({
 			mode: 'picker',
-			target: '#mytarget',
+			locale:'es',
+			showWorkingDays:false,
+			weekStart:'Mon',
+			dayNames: ["Dom", "Lun", "Mar", "Mier", "Jue", "Vie", "Sab"],
+			monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+			target: '#mytarget_a',
 			setWidth: '250px',
 			startHidden: true,
-			showTrigger: '#mytarget',
+			showTrigger: '#mytarget_a',
 			stylePast: true,
-			disablePast: true
+			disablePast: false
+		});
+
+		$('#mycalendar2_b').monthly({
+			mode: 'picker',
+			locale:'es',
+			showWorkingDays:true,
+			weekStart:'Mon',
+			dayNames: ["Dom", "Lun", "Mar", "Mier", "Jue", "Vie", "Sab"],
+			monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+			target: '#mytarget_a',
+			setWidth: '250px',
+			startHidden: true,
+			showTrigger: '#mytarget_b',
+			stylePast: true,
+			disablePast: false
 		});
 
 	switch(window.location.protocol) {
