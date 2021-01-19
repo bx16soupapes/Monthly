@@ -1,6 +1,7 @@
 /*
 Monthly 2.2.2 by Kevin Thornbloom is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
 Modified 15-01-2021 -- added working days
+Modified 19-01-2021 -- fix working days
 */
 
 (function ($) {
@@ -25,7 +26,7 @@ Modified 15-01-2021 -- added working days
 				target: "",
 				useIsoDateFormat: false,
 				weekStart: 0,	// Sunday
-				showWorkingDays: true, 
+				showWorkingDays: true, // New
 				xmlUrl: ""
 			};
 
@@ -43,9 +44,7 @@ Modified 15-01-2021 -- added working days
 				dayNames = options.dayNames || defaultDayNames(),
 				markupBlankDay = '<div class="m-d monthly-day-blank"><div class="monthly-day-number"></div></div>',
 				weekStartsOnMonday = options.weekStart === "Mon" || options.weekStart === 1 || options.weekStart === "1",
-				WorkingDays = options.showWorkingDays,
 				primaryLanguageCode = locale.substring(0, 2).toLowerCase();
-				
 
 		if (options.maxWidth !== false) {
 			$(parent).css("maxWidth", options.maxWidth);
@@ -72,8 +71,8 @@ Modified 15-01-2021 -- added working days
 			});
 		}
 
-		// Add Day Of Week Titles
-		_appendDayNames(weekStartsOnMonday,WorkingDays);
+		// Add Day Of Week Titles - Dias se la Semana -- inc showWorkingDays
+		_appendDayNames(weekStartsOnMonday);
 
 		// Add CSS classes for the primary language and the locale. This allows for CSS-driven
 		// overrides of the language-specific header buttons. Lowercased because locale codes
@@ -95,6 +94,16 @@ Modified 15-01-2021 -- added working days
 		function setMonthly(month, year) {
 			$(parent).data("setMonth", month).data("setYear", year);
 
+			
+			// Working Days - Next Year Date - for last append blank days _prependBlankDays();
+			if (month == 11) {
+			    var next_month = new Date(year + 1, 0, 1).getMonth();
+			    var next_year = new Date(year + 1, 0, 1).getFullYear();
+			} else {
+			    var next_month = new Date(year, month + 1, 1).getMonth();
+			    var next_year = new Date(year, month + 1, 1).getFullYear();
+			}				
+			
 			// Get number of days
 			var index = 0,
 				dayQty = daysInMonth(month, year),
@@ -108,6 +117,15 @@ Modified 15-01-2021 -- added working days
 			$(parent + " .monthly-event-list, " + parent + " .monthly-day-wrap").empty();
 			// Print out the days
 			for(var dayNumber = 1; dayNumber <= dayQty; dayNumber++) {
+				
+				// hide non working days
+				if(options.showWorkingDays == true){ // new
+					var dayWeek = new Date(year, mZeroed, dayNumber, 0, 0, 0, 0).getDay(); // new
+					if((dayWeek != 0) && (dayWeek != 6)) { var style="" } else { var style="display: none;"; } // new
+				} else { 
+					var style="";
+				}
+				
 				// Check if it's a day in the past
 				var isInPast = options.stylePast && (
 					year < currentYear
@@ -116,9 +134,10 @@ Modified 15-01-2021 -- added working days
 						|| (month === currentMonth && dayNumber < currentDay)
 					))),
 					innerMarkup = '<div class="monthly-day-number">' + dayNumber + '</div><div class="monthly-indicator-wrap"></div>';
-				if(options.mode === "event") {
+				if(options.mode === "event") { // mode event
 					var thisDate = new Date(year, mZeroed, dayNumber, 0, 0, 0, 0);
-					$(parent + " .monthly-day-wrap").append("<div"
+					$(parent + " .monthly-day-wrap").append("<div style=\""+style+"\" "
+					//$(parent + " .monthly-day-wrap").append("<div"
 						+ attr("class", "m-d monthly-day monthly-day-event"
 							+ (isInPast ? " monthly-past-day" : "")
 							+ " dt" + thisDate.toISOString().slice(0, 10)
@@ -130,9 +149,10 @@ Modified 15-01-2021 -- added working days
 						+ attr("id", uniqueId + "day" + dayNumber)
 						+ attr("data-number", dayNumber)
 						+ '><div class="monthly-event-list-date">' + dayNames[thisDate.getDay()] + "<br>" + dayNumber + "</div></div>");
-				} else {
+				} else { // mode picker
 					$(parent + " .monthly-day-wrap").append("<a"
 						+ attr("href", "#")
+						+ attr("style", ""+style+"")
 						+ attr("class", "m-d monthly-day monthly-day-pick" + (isInPast ? " monthly-past-day" : ""))
 						+ attr("data-number", dayNumber)
 						+ ">" + innerMarkup + "</a>");
@@ -164,8 +184,11 @@ Modified 15-01-2021 -- added working days
 				roundup = Math.ceil(totaldays / 7) * 7,
 				daysdiff = roundup - totaldays;
 			if(totaldays % 7 !== 0) {
+				var daysCount=0;
 				for(index = 0; index < daysdiff; index++) {
-					$(parent + " .monthly-day-wrap").append(markupBlankDay);
+					daysCount++;
+					var dayWeekNext = new Date(next_year, next_month-1, daysCount, 0, 0, 0, 0).getDay();
+					if((dayWeekNext != 0) && (dayWeekNext != 6)) $(parent + " .monthly-day-wrap").append(markupBlankDay); // append last blank days
 				}
 			}
 
@@ -310,9 +333,9 @@ Modified 15-01-2021 -- added working days
 			return " " + name + "=\"" + newValue + "\"";
 		}
 
-		function _appendDayNames(startOnMonday,WorkingDays) {
-			console.log("showWorkingDays:"+WorkingDays);//showWorkingDays
-			if(WorkingDays == true) { var tdays=6; } else { var tdays=5; }
+		
+		function _appendDayNames(startOnMonday) { // inc showWorkingDays
+			if(options.showWorkingDays == false){ var tdays=6; } else { var tdays=5; }
 			
 			var offset = startOnMonday ? 1 : 0,
 				dayName = "",
@@ -320,21 +343,9 @@ Modified 15-01-2021 -- added working days
 			for(dayIndex = 0; dayIndex < tdays; dayIndex++) {
 				dayName += "<div>" + dayNames[dayIndex + offset] + "</div>";
 			}
-			if(WorkingDays == true) dayName += "<div>" + dayNames[startOnMonday ? 0 : 6] + "</div>";
+			if(options.showWorkingDays == false) dayName += "<div>" + dayNames[startOnMonday ? 0 : 6] + "</div>"; // new
 			$(parent).append('<div class="monthly-day-title-wrap">' + dayName + '</div><div class="monthly-day-wrap"></div>');
-		}
-
-		function _appendDayNames__reso(startOnMonday) {
-			//console.log("append"+startOnMonday);
-			var offset = startOnMonday ? 1 : 0,
-				dayName = "",
-				dayIndex = 0;
-			for(dayIndex = 0; dayIndex < 6; dayIndex++) {
-				dayName += "<div>" + dayNames[dayIndex + offset] + "</div>";
-			}
-			dayName += "<div>" + dayNames[startOnMonday ? 0 : 6] + "</div>";
-			$(parent).append('<div class="monthly-day-title-wrap">' + dayName + '</div><div class="monthly-day-wrap"></div>');
-		}
+		}		
 
 		// Detect the user's preferred language
 		function defaultLocale() {
@@ -385,11 +396,14 @@ Modified 15-01-2021 -- added working days
 			return names;
 		}
 
-		function _prependBlankDays(count) {
+		function _prependBlankDays(count) { // new 
 			var wrapperEl = $(parent + " .monthly-day-wrap"),
 				index = 0;
 			for(index = 0; index < count; index++) {
-				wrapperEl.prepend(markupBlankDay);
+				var style="";
+				if(options.showWorkingDays == true) if(index == 5) style="display: none;"; // showWorkingDays
+				var markupBlankDayx = '<div class="m-d monthly-day-blank" style="'+style+'"><div class="monthly-day-number"></div></div>';
+				wrapperEl.prepend(markupBlankDayx);
 			}
 		}
 
